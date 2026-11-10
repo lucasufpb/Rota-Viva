@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rota Viva — Descubra a cidade do seu jeito</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ===== CORES DA IDENTIDADE VISUAL: altere aqui ===== */
+:root{--verde:#0F766E;--ambar:#F59E0B;--fundo:#F8FAF7;--texto:#1F2937;--branco:#FFFFFF;--borda:#E3E8E2;--suave:#E6F2F0;--erro:#B91C1C;--ok:#166534}
+*{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:70px}
+body{margin:0;font:16px/1.6 Inter,system-ui,sans-serif;background:var(--fundo);color:var(--texto)}
+h1,h2,h3,button,.btn,nav a,.logo{font-family:Poppins,sans-serif}
+h1,h2,h3{line-height:1.2;margin:0 0 .5em}
+a{color:var(--verde)}
+.wrap{max-width:1080px;margin:auto;padding:0 18px}
+section{padding:48px 0}
+header{position:fixed;top:0;left:0;right:0;z-index:20;background:var(--branco);border-bottom:1px solid var(--borda)}
+header .wrap{display:flex;align-items:center;justify-content:space-between;height:60px}
+.logo{display:flex;gap:8px;align-items:center;font-weight:700;color:var(--verde);text-decoration:none;font-size:1.1rem}
+nav{display:flex;gap:2px}nav a{padding:8px 10px;border-radius:10px;text-decoration:none;color:var(--texto);font-size:.88rem;font-weight:500}
+nav a:hover{background:var(--suave)}
+main{padding-top:60px}
+.hero{background:linear-gradient(160deg,var(--suave),var(--fundo));padding:56px 0}
+.hero h1{font-size:clamp(2rem,7vw,3.4rem);color:var(--verde);max-width:14ch}
+.hero p{max-width:52ch;font-size:1.1rem}
+.btn{display:inline-block;border:0;border-radius:14px;padding:14px 22px;font-size:1rem;font-weight:600;cursor:pointer;text-decoration:none;background:var(--verde);color:#fff;margin:6px 8px 6px 0}
+.btn.sec{background:#fff;color:var(--verde);border:2px solid var(--verde)}
+.btn.am{background:var(--ambar);color:#1F2937}
+.btn.peq{padding:8px 12px;font-size:.82rem;border-radius:10px}
+.btn:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible{outline:3px solid var(--ambar);outline-offset:2px}
+.grid{display:grid;gap:16px;grid-template-columns:1fr}
+.card{background:var(--branco);border:1px solid var(--borda);border-radius:18px;padding:20px;box-shadow:0 2px 10px rgba(15,118,110,.07)}
+.ic{width:46px;height:46px;border-radius:14px;background:var(--ambar);display:grid;place-items:center;font-size:1.4rem;margin-bottom:10px}
+.num{width:38px;height:38px;border-radius:50%;background:var(--verde);color:#fff;display:grid;place-items:center;font:600 1.1rem Poppins;margin-bottom:8px}
+label,.lbl{display:block;font-weight:600;margin:16px 0 6px}
+input[type=text],input[type=date],input[type=search],select{width:100%;padding:12px;border:1.5px solid var(--borda);border-radius:12px;font:inherit;background:#fff;color:var(--texto)}
+.seg{display:flex;flex-wrap:wrap;gap:8px}
+.seg button,.chip{border:1.5px solid var(--borda);background:#fff;border-radius:12px;padding:10px 16px;font-size:.95rem;cursor:pointer;color:var(--texto)}
+.seg button[aria-pressed=true]{background:var(--verde);border-color:var(--verde);color:#fff}
+.chk{display:flex;flex-wrap:wrap;gap:8px}
+.chk label{margin:0;font-weight:500;border:1.5px solid var(--borda);border-radius:12px;padding:10px 14px;cursor:pointer;display:flex;gap:8px;align-items:center;background:#fff}
+.chk label:has(input:checked){background:var(--suave);border-color:var(--verde)}
+.erro{color:var(--erro);font-size:.88rem;min-height:1em;margin:4px 0 0}
+.msg{border-radius:12px;padding:12px 16px;margin:14px 0;font-weight:500}
+.msg.ok{background:#DCFCE7;color:var(--ok)}.msg.bad{background:#FEE2E2;color:var(--erro)}
+.resumo{display:grid;gap:8px;grid-template-columns:1fr 1fr}
+.resumo div{background:var(--suave);border-radius:12px;padding:10px 12px;font-size:.9rem}
+.resumo b{display:block;font-family:Poppins;color:var(--verde);font-size:.78rem}
+.per{display:inline-block;background:var(--ambar);border-radius:99px;padding:2px 14px;font:600 .85rem Poppins;margin:18px 0 8px}
+.at{padding:0;overflow:hidden;display:flex;flex-direction:column}
+.foto{height:96px;display:grid;place-items:center}
+.at .corpo{padding:16px;display:flex;flex-direction:column;gap:6px;flex:1}
+.at h3{font-size:1.05rem;margin:0}
+.meta{font-size:.85rem;color:#4B5563}
+.tag{display:inline-block;border-radius:99px;padding:2px 10px;font-size:.78rem;font-weight:600}
+.s{background:#DCFCE7;color:#166534}.p{background:#FEF3C7;color:#92400E}.n{background:#E5E7EB;color:#374151}
+.dica{background:#FFFBEB;border-left:4px solid var(--ambar);padding:6px 10px;font-size:.85rem;border-radius:6px}
+.acoes{display:flex;flex-wrap:wrap;gap:6px;margin-top:auto;padding-top:8px}
+.filtros{display:grid;gap:10px;grid-template-columns:1fr 1fr;margin-bottom:18px}
+.filtros .full{grid-column:1/-1}
+footer{background:var(--texto);color:#E5E7EB;padding:36px 0;font-size:.92rem}
+footer a{color:#FCD34D;margin-right:12px}footer b{font-family:Poppins;color:#fff}
+#bot{position:fixed;right:16px;bottom:16px;z-index:30}
+#botBtn{width:60px;height:60px;border-radius:50%;border:0;background:var(--ambar);font-size:1.7rem;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.25)}
+#botBox{display:none;position:absolute;right:0;bottom:72px;width:min(340px,calc(100vw - 32px));background:#fff;border:1px solid var(--borda);border-radius:18px;box-shadow:0 8px 28px rgba(0,0,0,.2);overflow:hidden}
+#botBox.on{display:block}
+#botBox h3{margin:0;background:var(--verde);color:#fff;padding:12px 16px;font-size:1rem}
+#log{height:260px;overflow:auto;padding:12px;display:flex;flex-direction:column;gap:8px}
+#log p{margin:0;padding:8px 12px;border-radius:14px;max-width:88%;font-size:.9rem}
+#log .v{background:var(--suave)}#log .u{background:var(--verde);color:#fff;align-self:flex-end}
+#botBox form{display:flex;gap:6px;padding:10px;border-top:1px solid var(--borda)}
+#botBox input{flex:1}
+@media(min-width:700px){.grid.c3{grid-template-columns:repeat(3,1fr)}.grid.c4{grid-template-columns:repeat(2,1fr)}.grid.at-g{grid-template-columns:repeat(2,1fr)}.filtros{grid-template-columns:repeat(3,1fr)}.filtros .full{grid-column:auto}.resumo{grid-template-columns:repeat(3,1fr)}nav a{font-size:1rem;padding:8px 14px}}
+@media(min-width:980px){.grid.c4{grid-template-columns:repeat(4,1fr)}.grid.at-g{grid-template-columns:repeat(3,1fr)}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <a class="logo" href="#inicio" aria-label="Rota Viva">
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#0F766E" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M15.5 8.5l-2 5-5 2 2-5z" fill="#F59E0B"/></svg>Rota Viva</a>
+  <nav aria-label="Menu principal"><a href="#inicio">Início</a><a href="#criar">Criar roteiro</a><a href="#atracoes">Atrações</a><a href="#ajuda">Ajuda</a></nav>
+</div></header>
+
+<main>
+<!-- 1. TELA INICIAL -->
+<section class="hero" id="inicio"><div class="wrap">
+  <h1>Descubra a cidade do seu jeito</h1>
+  <p>Monte um roteiro personalizado em poucos cliques, com atrações, mapas, dicas e informações de acessibilidade.</p>
+  <a class="btn" href="#criar">Criar meu roteiro</a><a class="btn sec" href="#atracoes">Conhecer as atrações</a>
+  <div class="grid c3" style="margin-top:32px">
+    <div class="card"><div class="ic">🧭</div><h3>Roteiro sob medida</h3><p>Escolha interesses, orçamento e dias.</p></div>
+    <div class="card"><div class="ic">♿</div><h3>Acessibilidade primeiro</h3><p>Encontre locais adaptados e informações úteis.</p></div>
+    <div class="card"><div class="ic">📱</div><h3>Tudo no seu celular</h3><p>Acesse pelo navegador, salve e compartilhe.</p></div>
+  </div>
+</div></section>
+
+<!-- 2. FORMULÁRIO + 3. ROTEIRO -->
+<section id="criar"><div class="wrap">
+  <h2>Criar meu roteiro</h2>
+  <form class="card" id="form" novalidate>
+    <label for="cidade">Cidade</label><select id="cidade"></select><p class="erro" id="e-cidade"></p>
+    <label for="data">Data de início</label><input type="date" id="data"><p class="erro" id="e-data"></p>
+    <label for="dias">Número de dias</label><select id="dias"><option>1</option><option>2</option><option>3</option></select>
+    <span class="lbl">Orçamento</span><div class="seg" data-g="orc"><button type="button" data-v="Baixo">Baixo</button><button type="button" data-v="Médio">Médio</button><button type="button" data-v="Alto">Alto</button></div><p class="erro" id="e-orc"></p>
+    <span class="lbl">Interesses</span><div class="chk" id="interesses"></div><p class="erro" id="e-int"></p>
+    <span class="lbl">Você precisa de opções acessíveis?</span><div class="seg" data-g="acc"><button type="button" data-v="Sim">Sim</button><button type="button" data-v="Não">Não</button></div><p class="erro" id="e-acc"></p>
+    <p class="meta">O Rota Viva prioriza atrações acessíveis ou com acessibilidade parcial, mas recomendamos confirmar as condições de acessibilidade diretamente com o local antes da visita.</p>
+    <label for="transp">Meio de transporte</label><select id="transp"><option>A pé</option><option>Transporte público</option><option>Carro</option><option>Aplicativo de transporte</option></select>
+    <label for="idioma">Idioma preferido</label><select id="idioma"><option>Português</option><option>Inglês</option><option>Espanhol</option></select>
+    <p><button class="btn" type="submit">Gerar meu roteiro</button></p>
+    <p class="meta">O Rota Viva organiza as sugestões com base nas suas preferências, no orçamento, no transporte e nas informações de acessibilidade. Esta é uma versão de protótipo com recomendação por regras; em uma versão futura, poderá utilizar inteligência artificial para recomendações ainda mais personalizadas.</p>
+  </form>
+  <div id="aviso" role="status"></div>
+  <div id="resultado" hidden>
+    <h2 id="tit"></h2><div class="resumo" id="resumo"></div>
+    <div id="dias-out"></div>
+    <p><button class="btn" id="copiar" type="button">Copiar roteiro</button><button class="btn sec" id="limpar" type="button">Limpar roteiro</button></p>
+    <div id="aviso2" role="status"></div>
+  </div>
+</div></section>
+
+<!-- 4. ATRAÇÕES -->
+<section id="atracoes" style="background:#fff"><div class="wrap">
+  <h2>Atrações</h2>
+  <div class="filtros">
+    <select id="fcd" aria-label="Cidade"></select>
+    <select id="fc" aria-label="Categoria"></select>
+    <select id="fp" aria-label="Preço"><option value="">Qualquer preço</option><option value="0">Grátis</option><option value="b">Baixo (até R$ 40)</option><option value="m">Médio (até R$ 100)</option><option value="a">Alto</option></select>
+    <select id="fa" aria-label="Acessibilidade"><option value="">Acessibilidade: todas</option><option value="s">Acessível</option><option value="p">Acessibilidade parcial</option><option value="n">Não informado</option></select>
+    <select id="fi" aria-label="Interesse"></select>
+    <input type="search" id="fb" placeholder="Buscar por nome" aria-label="Buscar por nome" class="full">
+  </div>
+  <div class="grid at-g" id="lista"></div>
+  <h3 style="margin-top:32px">⭐ Meus favoritos</h3>
+  <div class="grid at-g" id="favs"></div>
+</div></section>
+
+<!-- AJUDA -->
+<section id="ajuda"><div class="wrap">
+  <h2>Como funciona</h2>
+  <div class="grid c4">
+    <div class="card"><div class="num">1</div><p>Escolha suas preferências.</p></div>
+    <div class="card"><div class="num">2</div><p>Receba um roteiro organizado por dia.</p></div>
+    <div class="card"><div class="num">3</div><p>Veja mapa, horários e dicas.</p></div>
+    <div class="card"><div class="num">4</div><p>Salve e compartilhe sua rota.</p></div>
+  </div>
+  <p>Dúvidas? Toque no balão 💬 no canto da tela e converse com a Viva.</p>
+</div></section>
+</main>
+
+<!-- 6. RODAPÉ -->
+<footer><div class="wrap">
+  <b>Rota Viva</b><br>Descubra a cidade do seu jeito.<br><br>
+  <a href="#">Sobre</a><a href="#">Política de Privacidade</a><a href="#">Termos de Uso</a><a href="#">Contato</a><br><br>
+  <a href="#">Instagram</a><a href="#">TikTok</a><a href="#">Facebook</a><a href="#">WhatsApp</a><br><br>
+  <small>Protótipo acadêmico criado para fins educacionais.</small><br><small>Horários, preços e condições de acessibilidade podem mudar. Confirme antes da visita.</small>
+</div></footer>
+
+<!-- 5. CHATBOT -->
+<div id="bot">
+  <div id="botBox" role="dialog" aria-label="Chat com a Viva">
+    <h3>Viva · assistente</h3><div id="log" aria-live="polite"></div>
+    <form id="botForm"><input type="text" id="botIn" placeholder="Digite sua dúvida" aria-label="Mensagem"><button class="btn peq" type="submit" style="margin:0">Enviar</button></form>
+  </div>
+  <button id="botBtn" aria-label="Abrir chat com a Viva">💬</button>
+</div>
+
+<script>
+/* ===== GUIA RÁPIDO DO Rota Viva: onde alterar =====
+   Cidades ........... a lista da caixa "Cidade" vem das atrações (campo cd); CIDADE é a cidade padrão
+   Atrações .......... lista A
+   Cores ............. variáveis em :root, no início do CSS
+   Chatbot ........... lista RESP (respostas) e SEM (resposta padrão)
+   Regras do roteiro . função gerar() (filtros de orçamento e acessibilidade, pontuação por interesses e transporte) */
+/* ============ CIDADE PADRÃO: usada nas atrações que não têm o campo cd.
+   Para criar outra cidade na caixa de seleção, adicione atrações com cd:"Nome da cidade". ============ */
+const CIDADE = "São Paulo";
+
+/* ============ LISTA DE ATRAÇÕES: edite, apague ou copie um bloco para criar outra ============
+   p = preço em reais (0 = grátis) | a = acessibilidade: s (acessível), p (parcial), n (não informado)
+   t = interesses | per = período sugerido: m (manhã), t (tarde), n (noite) | z = região (usada para "a pé") */
+const A = [
+{id:1,n:"MASP – Museu de Arte de São Paulo",b:"Bela Vista",c:"Museu",p:75,h:"10h às 18h (fecha às segundas)",d:"Acervo de arte em um prédio icônico na Avenida Paulista.",a:"s",t:["arte","cultura"],per:"t",z:"Paulista"},
+{id:2,n:"Parque Ibirapuera",b:"Ibirapuera",c:"Parque",p:0,h:"5h às 00h",d:"Lagos, ciclovias e gramados para passear com calma.",a:"s",t:["natureza"],per:"m",z:"Ibirapuera"},
+{id:3,n:"Mercado Municipal",b:"Centro",c:"Mercado",p:40,h:"6h às 18h",d:"Frutas, queijos e o famoso sanduíche de mortadela.",a:"p",t:["gastro","cultura"],per:"m",z:"Centro"},
+{id:4,n:"Catedral da Sé",b:"Sé",c:"Monumento",p:0,h:"8h às 17h",d:"Igreja neogótica no marco zero da cidade.",a:"p",t:["cultura"],per:"m",z:"Centro"},
+{id:5,n:"Pinacoteca do Estado",b:"Luz",c:"Museu",p:20,h:"10h às 18h",d:"Arte brasileira em um edifício histórico de tijolinhos.",a:"s",t:["arte","cultura"],per:"t",z:"Centro"},
+{id:6,n:"Feira da Liberdade",b:"Liberdade",c:"Feira",p:15,h:"Sáb. e dom., 10h às 18h",d:"Pastéis, doces e artesanato no bairro japonês.",a:"n",t:["gastro","compras"],per:"t",z:"Centro"},
+{id:7,n:"Beco do Batman",b:"Vila Madalena",c:"Galeria a céu aberto",p:0,h:"Livre, melhor de dia",d:"Ruas inteiras cobertas de grafites e arte urbana.",a:"p",t:["arte","cultura"],per:"t",z:"Oeste"},
+{id:8,n:"Rua Augusta",b:"Consolação",c:"Rua comercial",p:0,h:"10h às 22h",d:"Lojas, cafés e bares em uma das ruas mais animadas.",a:"p",t:["compras","noite"],per:"t",z:"Paulista"},
+{id:9,n:"Shopping Iguatemi",b:"Jardins",c:"Shopping",p:0,h:"10h às 22h",d:"Lojas e praça de alimentação em ambiente climatizado.",a:"s",t:["compras","gastro"],per:"t",z:"Paulista"},
+{id:10,n:"Parque Trianon",b:"Bela Vista",c:"Parque",p:0,h:"6h às 18h",d:"Um pedaço de mata atlântica ao lado da Paulista.",a:"s",t:["natureza"],per:"m",z:"Paulista"},
+{id:11,n:"Bares da Vila Madalena",b:"Vila Madalena",c:"Bairro boêmio",p:60,h:"18h à 1h",d:"Rodas de samba, petiscos e cerveja gelada.",a:"p",t:["noite","gastro"],per:"n",z:"Oeste"},
+{id:12,n:"Theatro Municipal",b:"Centro",c:"Casa de espetáculos",p:60,h:"Visitas de dia, shows à noite",d:"Teatro histórico com concertos e visitas guiadas.",a:"p",t:["cultura","arte","noite"],per:"n",z:"Centro"},
+{id:13,n:"Museu do Ipiranga",b:"Ipiranga",c:"Museu",p:30,h:"10h às 17h",d:"A história do Brasil em um palácio com jardins.",a:"s",t:["cultura","arte","natureza"],per:"t",z:"Sul"},
+{id:14,n:"Jardim Botânico",b:"Cambuci",c:"Parque",p:15,h:"9h às 17h",d:"Estufas, trilhas curtas e muitas flores.",a:"p",t:["natureza"],per:"m",z:"Sul"},
+{id:15,n:"Casa de Jazz Paulista",b:"Consolação",c:"Casa de shows",p:150,h:"20h à 1h",d:"Música ao vivo e jantar em ambiente intimista.",a:"s",t:["noite","arte"],per:"n",z:"Paulista"},
+{id:16,n:"Restaurante Terraço Paulistano",b:"Centro",c:"Restaurante",p:180,h:"19h às 23h",d:"Cozinha brasileira contemporânea com vista da cidade.",a:"s",t:["gastro","noite"],per:"n",z:"Centro"},
+{id:17,n:"Feira de Artesanato da República",b:"República",c:"Feira",p:0,h:"Sáb. e dom., 8h às 14h",d:"Bordados, cerâmicas e lembrancinhas feitas à mão.",a:"p",t:["compras","arte"],per:"m",z:"Centro"},
+{id:18,n:"Parque da Luz",b:"Luz",c:"Parque",p:0,h:"7h às 18h",d:"Jardim histórico com esculturas, perto da Pinacoteca.",a:"s",t:["natureza","cultura"],per:"t",z:"Centro"},
+/* ---- Rio de Janeiro ---- */
+{id:19,cd:"Rio de Janeiro",n:"Cristo Redentor",b:"Cosme Velho",c:"Monumento",p:100,h:"8h às 19h",d:"Símbolo do Rio, com vista ampla da cidade do alto do Corcovado.",a:"p",t:["cultura","natureza"],per:"m",z:"Zona Sul"},
+{id:20,cd:"Rio de Janeiro",n:"Jardim Botânico do Rio",b:"Jardim Botânico",c:"Parque",p:30,h:"8h às 17h",d:"Palmeiras imperiais, lagos e trilhas à sombra.",a:"s",t:["natureza"],per:"m",z:"Zona Sul"},
+{id:21,cd:"Rio de Janeiro",n:"Praia de Ipanema e Arpoador",b:"Ipanema",c:"Praia",p:0,h:"Livre, pôr do sol no fim da tarde",d:"Areia, mar e o famoso pôr do sol aplaudido no Arpoador.",a:"p",t:["natureza"],per:"t",z:"Zona Sul"},
+{id:22,cd:"Rio de Janeiro",n:"Feira Hippie de Ipanema",b:"Ipanema",c:"Feira",p:0,h:"Domingos, 9h às 18h",d:"Artesanato, quadros e lembranças na Praça General Osório.",a:"p",t:["compras","arte"],per:"m",z:"Zona Sul"},
+{id:23,cd:"Rio de Janeiro",n:"Pão de Açúcar",b:"Urca",c:"Passeio panorâmico",p:190,h:"8h às 20h",d:"Passeio de bondinho com vista da Baía de Guanabara.",a:"p",t:["natureza"],per:"t",z:"Zona Sul"},
+{id:24,cd:"Rio de Janeiro",n:"Museu do Amanhã",b:"Centro",c:"Museu",p:30,h:"10h às 18h (fecha às segundas)",d:"Museu de ciências e sustentabilidade na Praça Mauá.",a:"s",t:["cultura","arte"],per:"m",z:"Centro RJ"},
+{id:25,cd:"Rio de Janeiro",n:"Confeitaria Colombo",b:"Centro",c:"Café histórico",p:60,h:"9h às 18h",d:"Salão belle époque com doces e chá da tarde.",a:"s",t:["gastro","cultura"],per:"t",z:"Centro RJ"},
+{id:26,cd:"Rio de Janeiro",n:"Escadaria Selarón",b:"Lapa",c:"Arte urbana",p:0,h:"Livre, melhor de dia",d:"Degraus cobertos de azulejos coloridos de vários países.",a:"n",t:["arte","cultura"],per:"t",z:"Centro RJ"},
+{id:27,cd:"Rio de Janeiro",n:"Feira de São Cristóvão",b:"São Cristóvão",c:"Feira",p:30,h:"Ter. a dom., a partir das 10h",d:"Comidas nordestinas, forró e artesanato.",a:"p",t:["gastro","compras","noite"],per:"n",z:"Centro RJ"},
+{id:28,cd:"Rio de Janeiro",n:"Casas de samba da Lapa",b:"Lapa",c:"Bairro boêmio",p:50,h:"19h às 2h",d:"Samba ao vivo sob os Arcos, bares e petiscos.",a:"p",t:["noite","gastro"],per:"n",z:"Centro RJ"},
+/* ---- Salvador ---- */
+{id:29,cd:"Salvador",n:"Pelourinho",b:"Centro Histórico",c:"Centro histórico",p:0,h:"Livre, melhor de dia",d:"Casarões coloridos, igrejas e ladeiras de pedra.",a:"n",t:["cultura","arte"],per:"m",z:"Pelourinho"},
+{id:30,cd:"Salvador",n:"Igreja de São Francisco",b:"Pelourinho",c:"Igreja histórica",p:15,h:"9h às 17h",d:"Igreja barroca com interior coberto de ouro.",a:"p",t:["cultura","arte"],per:"t",z:"Pelourinho"},
+{id:31,cd:"Salvador",n:"Elevador Lacerda",b:"Comércio",c:"Monumento",p:1,h:"7h às 23h",d:"Elevador que liga a cidade alta à baixa, com vista da baía.",a:"s",t:["cultura"],per:"t",z:"Pelourinho"},
+{id:32,cd:"Salvador",n:"Mercado Modelo",b:"Comércio",c:"Mercado",p:0,h:"9h às 19h",d:"Artesanato, instrumentos e lembranças baianas.",a:"p",t:["compras","gastro"],per:"m",z:"Cidade Baixa"},
+{id:33,cd:"Salvador",n:"Feira de São Joaquim",b:"Água de Meninos",c:"Feira",p:0,h:"6h às 17h",d:"Ervas, temperos e comidas típicas em uma feira tradicional.",a:"n",t:["gastro","compras"],per:"m",z:"Cidade Baixa"},
+{id:34,cd:"Salvador",n:"Museu de Arte Moderna (MAM)",b:"Solar do Unhão",c:"Museu",p:10,h:"13h às 19h",d:"Arte contemporânea com vista da Baía de Todos os Santos.",a:"p",t:["arte","cultura"],per:"t",z:"Cidade Baixa"},
+{id:35,cd:"Salvador",n:"Farol da Barra",b:"Barra",c:"Monumento",p:10,h:"8h às 19h",d:"Forte histórico com museu náutico e o melhor pôr do sol.",a:"p",t:["cultura","natureza"],per:"t",z:"Barra"},
+{id:36,cd:"Salvador",n:"Praia do Porto da Barra",b:"Barra",c:"Praia",p:0,h:"Livre",d:"Águas calmas e clima animado perto do Farol.",a:"p",t:["natureza"],per:"t",z:"Barra"},
+{id:37,cd:"Salvador",n:"Parque de Pituaçu",b:"Pituaçu",c:"Parque",p:0,h:"6h às 18h",d:"Lago, ciclovia e áreas verdes na orla.",a:"s",t:["natureza"],per:"m",z:"Orla"},
+{id:38,cd:"Salvador",n:"Casa do Acarajé Baiano",b:"Rio Vermelho",c:"Restaurante",p:90,h:"11h às 23h",d:"Acarajé, moqueca e sabores da cozinha baiana.",a:"s",t:["gastro","noite"],per:"n",z:"Orla"},
+{id:39,cd:"Salvador",n:"Bares do Rio Vermelho",b:"Rio Vermelho",c:"Bairro boêmio",p:60,h:"18h à 1h",d:"Bares, música ao vivo e petiscos perto do mar.",a:"p",t:["noite","gastro"],per:"n",z:"Orla"},
+{id:40,cd:"Salvador",n:"Teatro Castro Alves",b:"Campo Grande",c:"Casa de espetáculos",p:80,h:"Shows à noite",d:"Teatro tradicional com música, dança e espetáculos.",a:"s",t:["arte","noite","cultura"],per:"n",z:"Barra"}
+];
+A.forEach(a => a.cd = a.cd || CIDADE); // cada atração pertence a uma cidade (cd)
+const INT = {cultura:"Cultura e história",natureza:"Natureza e parques",gastro:"Gastronomia",compras:"Compras",noite:"Vida noturna",arte:"Arte e museus"};
+const ACC = {s:"Acessível",p:"Acessibilidade parcial",n:"Não informado"};
+const COR = {arte:"#F59E0B",cultura:"#B45309",natureza:"#16A34A",gastro:"#DC2626",compras:"#7C3AED",noite:"#1E3A8A"};
+/* Dicas de metrô/ônibus por região (texto livre, confira antes de viajar) */
+const DICA = {Paulista:"Metrô Trianon-MASP ou Consolação (Linha 2-Verde)",Centro:"Metrô Sé, República ou Luz (Linhas 1, 3 e 4)",Ibirapuera:"Ônibus a partir do metrô Santa Cruz (Linha 1-Azul)",Oeste:"Metrô Vila Madalena (Linha 2-Verde)","Centro RJ":"VLT ou metrô na região da Cinelândia","Zona Sul":"Metrô Linha 1 (Ipanema/General Osório) ou ônibus",Pelourinho:"Elevador Lacerda ou ônibus até o Centro Histórico","Cidade Baixa":"Ônibus ou aplicativo de transporte",Barra:"Ônibus pela orla ou aplicativo de transporte",Orla:"Ônibus pela orla ou aplicativo de transporte",Sul:"Ônibus a partir do metrô Sacomã (Linha 2-Verde)"};
+
+const $ = s => document.querySelector(s);
+const esc = t => String(t).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const preco = a => a.p ? "R$ " + a.p : "Grátis";
+const mapa = (a, cid) => "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(a.n + " " + (cid || a.cd || CIDADE));
+const nivel = p => p === 0 ? 0 : p <= 40 ? 1 : p <= 100 ? 2 : 3; // 0 grátis, 1 baixo, 2 médio, 3 alto
+
+let ultimo = ""; // texto do último roteiro, usado em "Copiar roteiro"
+function aviso(txt, tipo) { $("#aviso").innerHTML = txt ? `<div class="msg ${tipo}">${esc(txt)}</div>` : ""; }
+
+/* ---------- Favoritos (localStorage) ---------- */
+function favs() { try { return JSON.parse(localStorage.getItem("rvw_fav") || "[]"); } catch (e) { return []; } }
+function toggleFav(id) {
+  let f = favs(), tem = f.includes(id);
+  f = tem ? f.filter(x => x !== id) : f.concat(id);
+  try { localStorage.setItem("rvw_fav", JSON.stringify(f)); } catch (e) { aviso("Não foi possível salvar neste navegador.", "bad"); return; }
+  aviso(tem ? "Removido dos favoritos." : "Adicionado aos favoritos! ⭐", "ok");
+  atualizar();
+}
+
+/* ---------- Cartão de atração ---------- */
+function cartao(a, extra, cid) {
+  const fav = favs().includes(a.id);
+  const zap = "https://wa.me/?text=" + encodeURIComponent(`Olha esse passeio: ${a.n}\nHorário: ${a.h}\n${mapa(a, cid)}`);
+  return `<article class="card at">
+    <div class="foto" style="background:${COR[a.t[0]]}"><svg width="44" height="44" viewBox="0 0 24 24" fill="#fff"><path d="M12 2a7 7 0 0 0-7 7c0 5 7 13 7 13s7-8 7-13a7 7 0 0 0-7-7zm0 9.5A2.5 2.5 0 1 1 12 6.500a2.500 2.500 0 0 1 0 5z"/></svg></div>
+    <div class="corpo"><h3>${esc(a.n)}</h3>
+    <div class="meta">📍 ${esc(a.b)}, ${esc(a.cd)} · ${esc(a.c)}</div>
+    <div class="meta">💰 ${preco(a)} · 🕒 ${esc(a.h)}</div>
+    <p style="margin:2px 0">${esc(a.d)}</p>
+    <span class="tag ${a.a}">♿ ${ACC[a.a]}</span>
+    ${extra ? `<div class="dica">${extra}</div>` : ""}
+    <div class="acoes">
+      <a class="btn peq" style="margin:0" href="${mapa(a, cid)}" target="_blank" rel="noopener">Ver no mapa</a>
+      <a class="btn peq sec" style="margin:0" href="${zap}" target="_blank" rel="noopener">Compartilhar no WhatsApp</a>
+      <a class="btn peq sec" style="margin:0" href="https://api.qrserver.com/v1/create-qr-code/?size=250x250&amp;data=${encodeURIComponent(mapa(a, cid))}" target="_blank" rel="noopener">QR Code</a>
+      <button class="btn peq am" style="margin:0" data-fav="${a.id}">${fav ? "Remover dos favoritos" : "Adicionar aos favoritos"}</button>
+    </div></div></article>`;
+}
+document.addEventListener("click", e => { const b = e.target.closest("[data-fav]"); if (b) toggleFav(+b.dataset.fav); });
+
+/* ---------- Formulário: botões de escolha e interesses ---------- */
+const sel = {orc: "", acc: ""};
+document.querySelectorAll(".seg").forEach(g => g.addEventListener("click", e => {
+  const b = e.target.closest("button"); if (!b) return;
+  g.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b));
+  sel[g.dataset.g] = b.dataset.v;
+}));
+$("#interesses").innerHTML = Object.entries(INT).map(([k, v]) => `<label><input type="checkbox" value="${k}">${v}</label>`).join("");
+$("#cidade").innerHTML = [...new Set(A.map(a => a.cd))].sort().map(c => `<option>${esc(c)}</option>`).join(""); // cidades vindas das atrações
+$("#data").value = new Date().toISOString().slice(0, 10);
+
+/* ---------- Geração do roteiro ---------- */
+$("#form").addEventListener("submit", e => {
+  e.preventDefault();
+  const cid = $("#cidade").value.trim(), data = $("#data").value;
+  const ints = [...document.querySelectorAll("#interesses input:checked")].map(i => i.value);
+  const erros = {cidade: cid ? "" : "Conte para nós qual cidade você vai visitar.", data: data ? "" : "Escolha a data em que sua viagem começa.",
+    orc: sel.orc ? "" : "Escolha um orçamento para continuar.", int: ints.length ? "" : "Marque pelo menos um interesse.", acc: sel.acc ? "" : "Diga se você precisa de opções acessíveis."};
+  for (const k in erros) $("#e-" + k).textContent = erros[k];
+  if (Object.values(erros).some(Boolean)) { aviso("Quase lá! Falta preencher alguns campos acima.", "bad"); return; }
+  aviso("");
+  gerar({cid, data, dias: +$("#dias").value, orc: sel.orc, ints, acc: sel.acc === "Sim", transp: $("#transp").value, idioma: $("#idioma").value});
+});
+
+function gerar(o) {
+  const maxN = {Baixo: 1, "Médio": 2, Alto: 3}[o.orc];
+  let pool = A.filter(a => a.cd === o.cid && nivel(a.p) <= maxN && (!o.acc || a.a !== "n"));
+  if (o.acc) pool = pool.filter(a => a.a === "s" || a.a === "p"); // com "Sim", só ficam acessíveis (s) e parciais (p)
+  // pontuação: quantos interesses combinam
+  const pts = a => a.t.filter(t => o.ints.includes(t)).length * 10 + (o.acc && a.a === "s" ? 2 : 0) + (o.orc === "Alto" && a.p > 100 ? 1 : 0);
+  pool.sort((x, y) => pts(y) - pts(x));
+  const casam = pool.filter(a => pts(a) >= 10);
+  let usados = [], dias = [];
+  const slots = [["m", "Manhã"], ["t", "Tarde"], ["n", "Noite"]];
+  for (let d = 0; d < o.dias; d++) {
+    let zona = null, dia = [];
+    slots.forEach(([per, nome]) => {
+      let c = casam.filter(a => !usados.includes(a.id));
+      if (!c.length) c = pool.filter(a => !usados.includes(a.id)); // se faltar, completa com opções do perfil
+      if (!c.length) { dia.push({nome, a: null}); return; }
+      c.sort((x, y) => ((y.per === per) - (x.per === per)) * 100 + (o.transp === "A pé" ? ((y.z === zona) - (x.z === zona)) * 50 : 0) + (pts(y) - pts(x)));
+      const a = c[0]; usados.push(a.id); zona = zona || a.z; dia.push({nome, a});
+    });
+    dias.push(dia);
+  }
+  if (!usados.length) { $("#resultado").hidden = true; aviso("Não encontramos atrações compatíveis com as preferências escolhidas. Tente alterar o orçamento, os interesses ou a opção de acessibilidade.", "bad"); return; }
+  const dica = (a, i) => o.transp === "Transporte público" ? "🚇 " + (DICA[a.z] || "Consulte as linhas de metrô e ônibus da cidade") : (o.transp === "A pé" ? "🚶 Região " + a.z + ": boa para ir caminhando." : (i ? "🚗 Deslocamento estimado: " + (10 + (a.z.length % 3) * 5) + " a " + (20 + (a.z.length % 3) * 5) + " min do ponto anterior." : "🚗 Chegada: cerca de 15 a 25 min do centro."));
+  $("#tit").textContent = `Seu roteiro de ${o.dias} ${o.dias > 1 ? "dias" : "dia"} em ${o.cid}`;
+  const dt = new Date(o.data + "T12:00:00").toLocaleDateString("pt-BR");
+  const R = [["Cidade", o.cid], ["Duração", o.dias + (o.dias > 1 ? " dias" : " dia") + " (início em " + dt + ")"], ["Orçamento", o.orc],
+    ["Interesses", o.ints.map(i => INT[i]).join(", ")], ["Transporte", o.transp], ["Atrações incluídas", usados.length], ["Acessibilidade", o.acc ? "Opções acessíveis" : "Sem restrição"], ["Idioma", o.idioma], ["Criado por", "Rota Viva"]];
+  $("#resumo").innerHTML = R.map(([k, v]) => `<div><b>${k}</b>${esc(v)}</div>`).join("");
+  let n = 0;
+  $("#dias-out").innerHTML = dias.map((dia, i) => `<h3 style="margin-top:28px">Dia ${i + 1}</h3>` +
+    `<div class="grid at-g">` + dia.map(({nome, a}, j) => `<div><span class="per">${nome}</span>${a ? cartao(a, dica(a, j), o.cid) : '<div class="card"><p>Não encontramos outra atração compatível para este período. Explore os filtros da página Atrações para encontrar opções adicionais.</p></div>'}</div>`).join("") + `</div>`).join("");
+  $("#resultado").hidden = false;
+  ultimo = "Rota Viva — " + $("#tit").textContent + "\n" + dias.map((dia, i) => "\nDia " + (i + 1) + "\n" + dia.map(({nome, a}) => nome + ": " + (a ? `${a.n} (${a.b}, ${a.h}, ${preco(a)}) ${mapa(a, o.cid)}` : "sem atração compatível")).join("\n")).join("\n");
+  $("#aviso2").innerHTML = "";
+  aviso("Roteiro pronto! Boa viagem! 🎉", "ok");
+  $("#resultado").scrollIntoView({behavior: "smooth"});
+  atualizar();
+}
+/* Copiar roteiro: usa a área de transferência; se o navegador bloquear, tenta um método alternativo */
+$("#copiar").addEventListener("click", async () => {
+  const msg = (t, k) => $("#aviso2").innerHTML = `<div class="msg ${k}">${t}</div>`;
+  try { await navigator.clipboard.writeText(ultimo); msg("Roteiro copiado para a área de transferência!", "ok"); }
+  catch (e) {
+    const t = document.createElement("textarea"); t.value = ultimo; t.style.cssText = "position:fixed;opacity:0";
+    document.body.appendChild(t); t.select(); let ok = false;
+    try { ok = document.execCommand("copy"); } catch (_) {}
+    t.remove();
+    ok ? msg("Roteiro copiado para a área de transferência!", "ok") : msg("Não foi possível copiar automaticamente. Selecione o texto do roteiro e copie manualmente.", "bad");
+  }
+});
+$("#limpar").addEventListener("click", () => { $("#resultado").hidden = true; $("#dias-out").innerHTML = ""; aviso("Roteiro limpo. Você pode criar um novo quando quiser.", "ok"); });
+
+/* ---------- Página de atrações com filtros ---------- */
+$("#fcd").innerHTML = '<option value="">Todas as cidades</option>' + [...new Set(A.map(a => a.cd))].sort().map(c => `<option>${esc(c)}</option>`).join("");
+$("#fc").innerHTML = '<option value="">Todas as categorias</option>' + [...new Set(A.map(a => a.c))].sort().map(c => `<option>${c}</option>`).join("");
+$("#fi").innerHTML = '<option value="">Todos os interesses</option>' + Object.entries(INT).map(([k, v]) => `<option value="${k}">${v}</option>`).join("");
+function atualizar() {
+  const cd = $("#fcd").value, c = $("#fc").value, p = $("#fp").value, ac = $("#fa").value, i = $("#fi").value, b = $("#fb").value.toLowerCase().trim();
+  const r = A.filter(a => (!cd || a.cd === cd) && (!c || a.c === c) && (!p || (p === "0" ? a.p === 0 : p === "b" ? nivel(a.p) === 1 : p === "m" ? nivel(a.p) === 2 : nivel(a.p) === 3)) &&
+    (!ac || a.a === ac) && (!i || a.t.includes(i)) && (!b || a.n.toLowerCase().includes(b)));
+  $("#lista").innerHTML = r.length ? r.map(a => cartao(a)).join("") : '<p>Nenhuma atração encontrada. Tente mudar os filtros.</p>';
+  const f = A.filter(a => favs().includes(a.id));
+  $("#favs").innerHTML = f.length ? f.map(a => cartao(a)).join("") : "<p>Você ainda não salvou favoritos. Toque em “Adicionar aos favoritos” em qualquer atração.</p>";
+}
+["#fcd", "#fc", "#fp", "#fa", "#fi"].forEach(s => $(s).addEventListener("change", atualizar));
+$("#fb").addEventListener("input", atualizar);
+atualizar();
+
+/* ---------- Chatbot "Viva": respostas por palavra-chave ----------
+   Para mudar uma resposta, edite o texto; para criar outra, adicione uma linha em RESP: [["palavra1","palavra2"], () => "resposta"] */
+const RESP = [
+  [["horario"], () => "Os horários variam de lugar para lugar e podem mudar em feriados. Veja o horário sugerido na ficha de cada atração e confirme no site oficial antes de ir."],
+  [["gratis", "gratuito"], () => "Algumas atrações gratuitas: " + A.filter(a => a.p === 0).filter((a, i) => i % 2 === 0).slice(0, 8).map(a => a.n + " (" + a.cd + ")").join(", ") + "."],
+  [["acessibilidade", "cadeira"], () => "Marcamos cada atração como Acessível, Acessibilidade parcial ou Não informado. Na página Atrações, use o filtro de acessibilidade. Ao escolher “Sim” no roteiro, o Rota Viva prioriza atrações acessíveis ou com acessibilidade parcial, mas confirme as condições diretamente com o local antes da visita."],
+  [["transporte", "metro", "onibus"], () => "Em geral, metrô, trens e ônibus chegam às áreas turísticas. Escolha “Transporte público” no roteiro para ver dicas por região, e confirme linhas e horários antes de sair. Evite os horários de pico."],
+  [["mapa"], () => "Em cada cartão, toque em “Ver no mapa”. O Google Maps abre em outra aba com a atração já pesquisada."],
+  [["reserva"], () => "O site pode direcionar você para sistemas de reserva e links externos. Em locais muito procurados, reserve com antecedência."],
+  [["ajuda"], () => "Eu ajudo com: criar roteiros de 1 a 3 dias, filtrar atrações, ver mapas, salvar favoritos e compartilhar no WhatsApp. Pergunte sobre horários, gratuitos, acessibilidade ou transporte."]
+];
+const SEM = "Ainda estou aprendendo! Tente perguntar sobre horários, atrações gratuitas, acessibilidade, transporte ou mapas.";
+const log = $("#log");
+function say(t, q) { const p = document.createElement("p"); p.className = q; p.textContent = t; log.appendChild(p); log.scrollTop = log.scrollHeight; }
+say("Olá! Sou a Viva. Posso ajudar com horários, transporte, atrações gratuitas, acessibilidade e dicas para sua visita.", "v");
+$("#botBtn").addEventListener("click", () => $("#botBox").classList.toggle("on"));
+$("#botForm").addEventListener("submit", e => {
+  e.preventDefault();
+  const t = $("#botIn").value.trim(); if (!t) return;
+  say(t, "u"); $("#botIn").value = "";
+  const n = t.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+  const r = RESP.find(([ks]) => ks.some(k => n.includes(k)));
+  setTimeout(() => say(r ? r[1]() : SEM, "v"), 300);
+});
+</script>
+</body>
+</html>
